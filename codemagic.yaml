@@ -9,10 +9,6 @@ workflows:
         scripts:
             - npm install
             - echo "sdk.dir=$ANDROID_SDK_ROOT" > "$FCI_BUILD_DIR/android/local.properties"
-            - |
-                # build Android
-                cd android
-                ./gradlew assembleDebug
             - keychain initialize
             - |
               # set up provisioning profiles
