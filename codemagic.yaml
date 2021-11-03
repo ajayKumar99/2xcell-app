@@ -3,8 +3,8 @@ workflows:
         name: reactnativeappsigning
         environment:
             vars:
-                XCODE_WORKSPACE: "Xcell"
-                XCODE_SCHEME: "Xcell"
+                XCODE_WORKSPACE: "xcell.xcodeproj"
+                XCODE_SCHEME: "xcell"
             node: latest
         scripts:
             - npm install
