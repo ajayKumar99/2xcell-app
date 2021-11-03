@@ -1,29 +1,29 @@
 workflows:
-    react-native:
-        name: reactnativeappsigning
-        environment:
-            vars:
-                XCODE_WORKSPACE: "xcell.xcodeproj"
-                XCODE_SCHEME: "xcell"
-            node: latest
-        scripts:
-            - npm install
-            - echo "sdk.dir=$ANDROID_SDK_ROOT" > "$FCI_BUILD_DIR/android/local.properties"
-            - keychain initialize
-            - |
-              # set up provisioning profiles
-              PROFILES_HOME="$HOME/Library/MobileDevice/Provisioning Profiles"
-              mkdir -p "$PROFILES_HOME"
-              PROFILE_PATH="$(mktemp "$PROFILES_HOME"/$(uuidgen).mobileprovision)"
-              echo ${CM_PROVISIONING_PROFILE} | base64 --decode > $PROFILE_PATH
-              echo "Saved provisioning profile $PROFILE_PATH"  
-         
-            - xcode-project use-profiles
-            - |
-              # build iOS
-              cd ios
-              pod install  
-            - xcode-project build-ipa --workspace "ios/$XCODE_WORKSPACE.xcworkspace" --scheme "$XCODE_SCHEME"
-        artifacts:
-            - android/app/build/outputs/**/**/*.apk
-            - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+  ios-project-debug: # workflow ID
+    name: iOS debug # workflow name
+    environment:
+      xcode: latest
+      cocoapods: default
+      vars:
+          XCODE_PROJECT: "xcell.xcodeproj" # <-- Put the name of your project here. 
+          XCODE_SCHEME: "xcell" # <-- Put the name of your scheme here.
+    scripts:
+      - name: Run tests
+        script: |
+          xcodebuild \
+          -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 12,OS=14.1' \
+          clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO          
+      - name: Build debug app
+        script: |
+          xcodebuild build -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
+          CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
+    artifacts:
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+    publishing:
+      email:
+        recipients:
+          - ajax99k@gmail.com
