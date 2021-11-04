@@ -5,7 +5,7 @@ workflows:
       xcode: 11.7
       cocoapods: default
       vars:
-          XCODE_PROJECT: "xcell.xcodeproj" # <-- Put the name of your project here. 
+          XCODE_WORKSPACE: "xcell.xcworkspace" # <-- Put the name of your project here. 
           XCODE_SCHEME: "xcell" # <-- Put the name of your scheme here.
     scripts:
       - name: Install npm dependencies
@@ -24,7 +24,7 @@ workflows:
 #           clean build test CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO          
       - name: Build debug app
         script: |
-          cd ios && xcodebuild build -project "$XCODE_PROJECT" \
+          cd ios && xcodebuild build -workspace "$XCODE_WORKSPACE" \
           -scheme "$XCODE_SCHEME" \
           CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO          
     artifacts:
